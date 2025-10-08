@@ -18,11 +18,6 @@ npm run dev
 - `npm run preview` – preview the production build locally
 - `npm run lint` – run TypeScript for type checking
 
-## Deploying to GitHub Pages
-
-Run the production build and deploy the generated `dist/` folder. The Vite configuration uses a `base` of `/Note-Do/`, so the
-output HTML points at the correct asset paths when the site is hosted from `https://<user>.github.io/Note-Do/`.
-
 ## Project structure
 
 ```
