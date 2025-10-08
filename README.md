@@ -14,22 +14,9 @@ npm run dev
 ## Available scripts
 
 - `npm run dev` – start the Vite development server
-- `npm run build` – build the production bundle
+- `npm run build` – type-check and build for production
 - `npm run preview` – preview the production build locally
 - `npm run lint` – run TypeScript for type checking
-
-## Deploying to GitHub Pages
-
-This repository now ships with an automated GitHub Pages workflow. To publish changes:
-
-1. In your repository settings, point **Pages** at “GitHub Actions”.
-2. Push to `main` (or `work`) and the workflow in `.github/workflows/deploy.yml` will:
-   - install dependencies,
-   - run the production build (`npm run build`), and
-   - upload the generated `dist/` output.
-3. GitHub Pages serves the uploaded artifact with the correct base path (`/Note-Do/`).
-
-You can also trigger the workflow manually from the **Actions** tab if you want to redeploy without a new commit.
 
 ## Project structure
 
