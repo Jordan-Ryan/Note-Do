@@ -7,6 +7,7 @@ export const GlobalStyle = createGlobalStyle`
 
   html, body {
     height: 100%;
+    overflow: hidden;
   }
 
   body {
@@ -28,6 +29,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   #root {
-    min-height: 100%;
+    height: 100%;
+    overflow: hidden;
   }
 `;

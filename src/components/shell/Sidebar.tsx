@@ -17,14 +17,11 @@ interface SidebarProps {
   drawerOpen: boolean;
   onSelect: (id: string) => void;
   onRequestClose: () => void;
+  onToggleSidebar: () => void;
   toggleRef: React.RefObject<HTMLButtonElement>;
 }
 
-const SidebarContainer = styled.aside<{
-  $collapsed: boolean;
-  $mobile: boolean;
-  $drawerOpen: boolean;
-}>`
+const SidebarContainer = styled.aside<{ $collapsed: boolean; $mobile: boolean; $drawerOpen: boolean }>`
   position: fixed;
   top: 64px;
   bottom: 0;
@@ -37,7 +34,8 @@ const SidebarContainer = styled.aside<{
   width: ${({ $collapsed }) => ($collapsed ? '72px' : '280px')};
   padding: var(--space-2) var(--space-1);
   gap: var(--space-1);
-  transition: width var(--duration-med) var(--easing), transform var(--duration-med) var(--easing), box-shadow var(--duration-fast) var(--easing);
+  transition: width var(--duration-med) var(--easing), transform var(--duration-med) var(--easing),
+    box-shadow var(--duration-fast) var(--easing);
   box-shadow: none;
 
   ${({ $mobile, $drawerOpen }) =>
@@ -76,6 +74,43 @@ const Backdrop = styled.div`
   z-index: var(--z-overlay);
 `;
 
+const SidebarFooter = styled.div`
+  margin-top: auto;
+  padding: var(--space-1);
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const CollapseButton = styled.button<{ $collapsed: boolean }>`
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-text-on-dark);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--easing), background-color var(--duration-fast) var(--easing),
+    box-shadow var(--duration-fast) var(--easing);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  svg {
+    transform: rotate(${({ $collapsed }) => ($collapsed ? '0deg' : '180deg')});
+    transition: transform var(--duration-fast) var(--easing);
+  }
+`;
+
 export default function Sidebar({
   items,
   activeId,
@@ -84,9 +119,10 @@ export default function Sidebar({
   drawerOpen,
   onSelect,
   onRequestClose,
+  onToggleSidebar,
   toggleRef,
 }: SidebarProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLElement | null>(null);
   const itemRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const focusableSelectors = useMemo(
@@ -190,6 +226,28 @@ export default function Sidebar({
             ))}
           </NavList>
         </Navigation>
+        <SidebarFooter>
+          <CollapseButton
+            type="button"
+            onClick={onToggleSidebar}
+            $collapsed={collapsed}
+            aria-label={
+              mobile
+                ? drawerOpen
+                  ? 'Close navigation'
+                  : 'Open navigation'
+                : collapsed
+                ? 'Expand sidebar'
+                : 'Collapse sidebar'
+            }
+            aria-expanded={mobile ? drawerOpen : !collapsed}
+            aria-controls="app-sidebar"
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M6 4.5 10 9l-4 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </CollapseButton>
+        </SidebarFooter>
       </SidebarContainer>
     </>
   );

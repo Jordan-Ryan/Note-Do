@@ -85,6 +85,7 @@ const SidebarItem = forwardRef<HTMLButtonElement, SidebarItemProps>(
   ({ icon, label, active, collapsed, ...buttonProps }, ref) => (
     <ItemButton
       ref={ref}
+      type="button"
       $active={active}
       $collapsed={collapsed}
       aria-label={collapsed ? label : undefined}
@@ -93,7 +94,11 @@ const SidebarItem = forwardRef<HTMLButtonElement, SidebarItemProps>(
     >
       <IconSlot>{icon}</IconSlot>
       {!collapsed && <Label>{label}</Label>}
-      {collapsed && <Tooltip role="tooltip">{label}</Tooltip>}
+      {collapsed && (
+        <Tooltip role="tooltip" aria-hidden="true">
+          {label}
+        </Tooltip>
+      )}
     </ItemButton>
   ),
 );

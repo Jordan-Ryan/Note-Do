@@ -5,6 +5,8 @@ import Header from './components/shell/Header';
 import Sidebar from './components/shell/Sidebar';
 import type { SidebarItemData } from './components/shell/Sidebar';
 import { useMediaQuery } from './hooks/useMediaQuery';
+import PARANotesPage from './routes/PARANotesPage';
+import TodoPage from './routes/TodoPage';
 
 const ShellWrapper = styled.div`
   --sidebar-w: 280px;
@@ -16,11 +18,13 @@ const MainArea = styled.main`
   margin-top: 64px;
   margin-left: var(--sidebar-w);
   transition: margin-left var(--duration-med) var(--easing);
-  padding: calc(var(--space-2) * 1.5) var(--space-2);
+  height: calc(100vh - 64px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 
   @media (max-width: 768px) {
     margin-left: 0;
-    padding-bottom: calc(var(--space-2) * 2);
   }
 `;
 
@@ -53,9 +57,7 @@ const SubtleText = styled(PlaceholderText)`
   opacity: 1;
 `;
 
-export interface AppShellProps {
-  children?: React.ReactNode;
-}
+export interface AppShellProps {}
 
 type IconKey = 'calendar-day' | 'calendar' | 'list' | 'note' | 'settings';
 
@@ -115,9 +117,9 @@ const NAV_ITEMS: ReadonlyArray<{ id: string; label: string; icon: IconKey }> = [
   { id: 'settings', label: 'Settings', icon: 'settings' },
 ];
 
-export default function AppShell({ children }: AppShellProps) {
+export default function AppShell({}: AppShellProps) {
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const [activeRoute, setActiveRoute] = useState('day');
+  const [activeRoute, setActiveRoute] = useState('todo');
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -159,7 +161,15 @@ export default function AppShell({ children }: AppShellProps) {
 
   const handleToggleSidebar = () => {
     if (isMobile) {
-      setIsDrawerOpen((prev) => !prev);
+      setIsDrawerOpen((prev) => {
+        const next = !prev;
+        if (prev) {
+          requestAnimationFrame(() => {
+            toggleRef.current?.focus();
+          });
+        }
+        return next;
+      });
     } else {
       setIsSidebarExpanded((prev) => !prev);
     }
@@ -172,6 +182,30 @@ export default function AppShell({ children }: AppShellProps) {
       requestAnimationFrame(() => {
         toggleRef.current?.focus();
       });
+    }
+  };
+
+  const renderPage = () => {
+    switch (activeRoute) {
+      case 'notes':
+        return <PARANotesPage />;
+      case 'todo':
+        return <TodoPage />;
+      case 'day':
+      case 'calendar':
+      case 'settings':
+      default:
+        return (
+          <ContentCard>
+            <PlaceholderTitle>Coming Soon</PlaceholderTitle>
+            <PlaceholderText>
+              This {activeRoute} view will be implemented in a future update.
+            </PlaceholderText>
+            <SubtleText>
+              Use the Notes tab to access the note-taking functionality.
+            </SubtleText>
+          </ContentCard>
+        );
     }
   };
 
@@ -194,21 +228,11 @@ export default function AppShell({ children }: AppShellProps) {
           setIsDrawerOpen(false);
           toggleRef.current?.focus();
         }}
+        onToggleSidebar={handleToggleSidebar}
         toggleRef={toggleRef}
       />
       <MainArea>
-        {children ?? (
-          <ContentCard>
-            <PlaceholderTitle>Plan your day with clarity</PlaceholderTitle>
-            <PlaceholderText>
-              Use the navigation to jump between day view, calendar, to-do lists, notes, and settings. This shell keeps
-              your focus on the work ahead while staying minimal and high-contrast.
-            </PlaceholderText>
-            <SubtleText>
-              Future pages will mount here inside the fixed header and collapsible sidebar layout.
-            </SubtleText>
-          </ContentCard>
-        )}
+        {renderPage()}
       </MainArea>
     </ShellWrapper>
   );

@@ -1,6 +1,6 @@
 # Note-Do Shell
 
-This project sets up a minimal React 18 + TypeScript front-end using Vite and styled-components. It includes a fixed ASOS-inspired header, collapsible sidebar, and accessible task timer widget that future pages can mount inside.
+This project sets up a minimal React 18 + TypeScript front end using Vite and styled-components. It includes a fixed ASOS-inspired header, collapsible sidebar, and accessible task timer widget that future pages can mount inside.
 
 ## Getting started
 

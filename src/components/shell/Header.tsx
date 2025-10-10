@@ -64,6 +64,10 @@ const ToggleButton = styled.button<{ $open: boolean }>`
     transform: rotate(${({ $open }) => ($open ? '180deg' : '0deg')});
     transition: transform var(--duration-fast) var(--easing);
   }
+
+  @media (min-width: 769px) {
+    display: none;
+  }
 `;
 
 const Logo = styled.div`
@@ -84,6 +88,12 @@ const SearchField = styled.label`
   color: var(--color-header);
   padding: 0 calc(var(--space-2) + 2px);
   min-width: clamp(220px, 40vw, 520px);
+  transition: box-shadow var(--duration-fast) var(--easing), border-color var(--duration-fast) var(--easing);
+
+  &:focus-within {
+    box-shadow: 0 0 0 2px var(--color-accent);
+    border-color: transparent;
+  }
 `;
 
 const SearchIcon = styled.span`
@@ -106,38 +116,10 @@ const SearchInput = styled.input`
   &::placeholder {
     color: var(--color-text-muted);
   }
-
-  &:focus-visible {
-    box-shadow: 0 0 0 2px var(--color-accent);
-    border-radius: inherit;
-  }
 `;
 
 const RightCluster = styled(Cluster)`
   gap: var(--space-1);
-`;
-
-const NotificationButton = styled.button`
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: transparent;
-  color: var(--color-text-on-dark);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color var(--duration-fast) var(--easing), box-shadow var(--duration-fast) var(--easing);
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.08);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
-  }
 `;
 
 const HiddenLabel = styled.span`
@@ -161,8 +143,17 @@ export default function Header({ isMobile, isSidebarOpen, onToggleSidebar, toggl
         <Cluster>
           <ToggleButton
             ref={toggleRef}
+            type="button"
             onClick={onToggleSidebar}
-            aria-label={isMobile ? 'Toggle navigation' : isSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+            aria-label={
+              isMobile
+                ? isSidebarOpen
+                  ? 'Close navigation'
+                  : 'Open navigation'
+                : isSidebarOpen
+                ? 'Collapse sidebar'
+                : 'Expand sidebar'
+            }
             aria-expanded={isSidebarOpen}
             aria-controls="app-sidebar"
             $open={isSidebarOpen}
@@ -184,16 +175,6 @@ export default function Header({ isMobile, isSidebarOpen, onToggleSidebar, toggl
           </SearchField>
         </Cluster>
         <RightCluster>
-          <NotificationButton aria-label="Notifications">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-              <path
-                d="M9 2.75a3.25 3.25 0 0 1 3.25 3.25v1.2c0 .66.21 1.3.6 1.83l.74 1.04a1 1 0 0 1-.82 1.58H4.23a1 1 0 0 1-.82-1.58l.74-1.04a3.25 3.25 0 0 0 .6-1.83V6a3.25 3.25 0 0 1 3.25-3.25Z"
-                stroke="currentColor"
-                strokeWidth="1.4"
-              />
-              <path d="M7 14.5a2 2 0 0 0 4 0" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-            </svg>
-          </NotificationButton>
           <TaskTimer />
         </RightCluster>
       </HeaderContent>
